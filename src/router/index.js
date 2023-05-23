@@ -1,13 +1,20 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import HomePage from "../views/HomePage.vue"
+import HomePage from "@/views/HomePage.vue"
+import CommonLayout from "@/layout"
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/home',
-    component: HomePage
+    path: '/',
+    component: CommonLayout,
+    children: [
+      {
+        path: '/homepage',
+        component: HomePage
+      }
+    ]
   }
 ]
 
