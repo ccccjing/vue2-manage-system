@@ -14,7 +14,7 @@ export const routes = [
         path: 'home-page',
         component: () => import('@/views/HomePage.vue'),
         name: 'HomePage',
-        meta: { title: '首页', icon: 'el-icon-s-home' }
+        meta: { title: '首页', icon: 'el-icon-s-home', affix: 'true' }
       }
     ]
   },
@@ -29,7 +29,7 @@ export const routes = [
         path: 'permission-manage',
         component: () => import('@/views/SystemManage/PermissionManage'),
         name: 'PermissionManage',
-        meta: { title: '权限管理'},
+        meta: { title: '权限管理'}
       },
       {
         path: 'data-backup',
@@ -42,6 +42,26 @@ export const routes = [
         component: () => import('@/views/SystemManage/FileManage'),
         name: 'FileManage',
         meta: { title: '文件管理' }
+      }
+    ]
+  },
+  {
+    path: '/product-manage',
+    component: CommonLayout,
+    redirect: '/product-manage/product-type',
+    meta: { title: '产品管理', icon: 'el-icon-medal'},
+    children: [
+      {
+        path: 'product-type',
+        component: () => import('@/views/PeoductManage/ProductType.vue'),
+        name: 'ProductType',
+        meta: { title: '产品类型' }
+      },
+      {
+        path: 'product-audit',
+        component: () => import('@/views/PeoductManage/ProductAudit.vue'),
+        name: 'ProductAudit',
+        meta: { title: '产品审核' }
       }
     ]
   }

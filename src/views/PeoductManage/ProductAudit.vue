@@ -1,12 +1,10 @@
 <template>
-  <div>permissionmanage
-    <h1>permissionmanage</h1>
-  </div>
+  <div>ProductAudit</div>
 </template>
 
 <script>
 export default {
-  name: 'PermissionManage'
+  name: 'ProductAudit'
 }
 </script>
 

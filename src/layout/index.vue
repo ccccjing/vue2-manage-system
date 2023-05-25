@@ -1,15 +1,18 @@
 <template>
   <el-container>
+    <!-- aside -->
     <el-aside style="width: auto">
       <common-aside />
     </el-aside>
     <el-container>
+      <!-- header -->
       <el-header>
         <common-header />
       </el-header>
-      <el-main>
-        <common-main />
-      </el-main>
+      <!-- tags -->
+      <common-tags />
+      <!-- main -->
+      <common-main />
     </el-container>
   </el-container>
 </template>
@@ -18,13 +21,15 @@
 import CommonAside from './CommonAside'
 import CommonHeader from './CommonHeader'
 import CommonMain from './CommonMain'
+import CommonTags from './CommonTags'
 
 export default {
   name: "CommonLayout",
   components: {
     CommonAside,
     CommonHeader,
-    CommonMain
+    CommonMain,
+    CommonTags
   }
 };
 </script>

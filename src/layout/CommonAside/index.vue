@@ -2,8 +2,6 @@
   <el-menu
     :default-active="$route.path"
     class="el-menu-vertical-demo"
-    @open.once="handleOpen"
-    @close="handleClose"
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
@@ -40,17 +38,9 @@ export default {
     ])
   },
   methods: {
-    handleOpen(key, keyPath) {
-      this.$router.replace(key)
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
   },
   mounted() {
     this.routess = routes
-    console.log(this.routess, routes, this.$route)
   }
 };
 </script>

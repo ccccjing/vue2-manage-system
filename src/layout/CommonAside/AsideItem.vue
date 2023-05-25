@@ -99,10 +99,9 @@ export default {
         return this.basePath
       }
       if(this.basePath) {
-        console.log(this.basePath + "/" + routePath)
+        // console.log(this.basePath + "/" + routePath)
         return this.basePath + "/" +routePath
       }
-      // return path.resolve(this.basePath, routePath)
     }
   }
 }
