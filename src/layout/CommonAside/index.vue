@@ -11,7 +11,7 @@
   >
     <div class="title">{{ aside.isCollapse ? '后台' : '后台管理系统' }}</div>
     <aside-item
-      v-for="route in routess"
+      v-for="route in routes"
       :key="route.path"
       :item="route"
       :basePath="route.path"
@@ -20,8 +20,8 @@
 </template>
 
 <script>
+import { routes } from '@/router';
 import { mapGetters } from 'vuex'
-import {routes} from '@/router'
 import AsideItem from "./AsideItem.vue"
 
 export default {
@@ -29,18 +29,18 @@ export default {
   components: { AsideItem },
   data() {
     return {
-      routess: null
     };
   },
   computed: {
     ...mapGetters([
-      'aside'
+      'aside',
+      'routes'
     ])
   },
   methods: {
   },
   mounted() {
-    this.routess = routes
+    console.log(routes)
   }
 };
 </script>

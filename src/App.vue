@@ -22,4 +22,15 @@ html,body {
     }
   }
 }
+a {
+  text-decoration: none;
+}
+
+.clearfix {
+  float: right;
+}
+
+.el-table {
+  margin: 10px 0;
+}
 </style>

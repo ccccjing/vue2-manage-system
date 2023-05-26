@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import path from 'path-browserify'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -100,7 +101,7 @@ export default {
       }
       if(this.basePath) {
         // console.log(this.basePath + "/" + routePath)
-        return this.basePath + "/" +routePath
+        return path.resolve(this.basePath, routePath)
       }
     }
   }

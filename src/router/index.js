@@ -22,7 +22,6 @@ export const routes = [
     path: '/system-manage',
     component: CommonLayout,
     redirect: '/system-manage/permission-manage',
-    name: 'SystemManage',
     meta: { title: '系统管理', icon: 'el-icon-setting' },
     children: [
       {
