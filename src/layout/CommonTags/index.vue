@@ -1,17 +1,33 @@
 <template>
   <div class="tags-view-container">
-    <scroll-pane class="tags-view-wrapper">
+    <scroll-pane class="tags-view-wrapper" ref="scrollPane">
       <router-link
         v-for="tag in visitedTags"
+        ref="tag"
         :key="tag.path"
         class="tags-view-item"
         :class="isActive(tag)?'active':''"
         :to="{ path: tag.path, query: tag.query, fullPath: tag.fullPath }"
+        @contextmenu.prevent.native="openMenu(tag, $event)"
       >
         {{ tag.title }}
-        <span class="el-icon-close" v-if="!isAffix(tag)"></span>
+        <span
+          class="el-icon-close"
+          v-if="!isAffix(tag)"
+          @click.prevent.stop="closeSelectedTag(tag)"
+        ></span>
       </router-link>
     </scroll-pane>
+    <ul
+      :style="{left:left+'px',top:top+'px'}"
+      class="contextmenu"
+      v-show="visible"
+    >
+      <li @click="refreshSelectedTag(selectedTag)">刷新页面</li>
+      <li v-if="!isAffix(selectedTag)" @click="closeSelectedTag(selectedTag)">关闭当前页面</li>
+      <li @click="closeOtherTags">关闭其他页面</li>
+      <li @click="closeAllTags(selectedTag)">关闭所有页面</li>
+    </ul>
   </div>
 </template>
 
@@ -25,7 +41,11 @@ export default {
   components: { ScrollPane },
   data() {
     return {
-      affixTags: []
+      affixTags: [],
+      top: 0,
+      left: 0,
+      visible: false,
+      selectedTag: {}
     }
   },
   computed: {
@@ -34,10 +54,24 @@ export default {
       'routes'
     ])
   },
+  watch: {
+    $route() {
+      this.addTags()
+    },
+    visible(value) {
+      if(value) {
+        document.body.addEventListener('click', this.closeMenu)
+      } else {
+        document.body.removeEventListener('click', this.closeMenu)
+      }
+    }
+  },
   methods: {
+    // 判断是否是当前页路由
     isActive(tag) {
       return tag.path === this.$route.path
     },
+    // 判断是否是固定页
     isAffix(tag) {
       return tag.meta && tag.meta.affix
     },
@@ -71,12 +105,94 @@ export default {
           this.$store.dispatch('addVisitedTags', tag)
         }
       }
+    },
+    addTags() {
+      const { name } = this.$route
+      if(name) {
+        this.$store.dispatch('addTags', this.$route)
+      }
+      return false
+    },
+    closeSelectedTag(tag) {
+      this.$store.dispatch('delTags', tag).then(({ visitedTags }) => {
+        if(this.isActive(tag)) {
+          this.toLastTag(visitedTags, tag)
+        }
+      })
+    },
+    refreshSelectedTag(tag) {
+      this.$store.dispatch('delCachedTags', tag).then(() => {
+        const { fullPath } = tag
+        this.$nextTick(() => {
+          this.$router.replace({
+            path: '/redirect' + fullPath
+          })
+        })
+      })
+    },
+    closeOtherTags() {
+      this.$router.push(this.selectedTag)
+      this.$store.dispatch('delOtherTags', this.selectedTag).then(() => {
+        // this.moveToCurrentTag()
+      })
+    },
+    // moveToCurrentTag() {
+    //   const tags = this.$refs.tag
+    //   this.$nextTick(() => {
+    //     for(let tag of tags) {
+    //       if(tag.to.path === this.$route.path) {
+    //         this.$refs.scrollPane.moveToTarget(tag)
+    //         if(tag.to.fullPath !== this.$route.fullPath) {
+    //           this.$store.dispatch('updateVisitedTag', this.$route)
+    //         }
+    //         break
+    //       }
+    //     }
+    //   })
+    // },
+    closeAllTags(tag) {
+      this.$store.dispatch('delAllTags').then(({ visitedTags }) => {
+        if(this.affixTags.some(t => t.path === tag.path)) return
+        this.toLastTag(visitedTags, tag)
+      })
+    },
+    toLastTag(visitedTags, tag) { 
+      const lastTag = visitedTags.slice(-1)[0]
+      if(lastTag) {
+        this.$router.push(lastTag.fullPath)
+      } else {
+        if (tag.name === 'Dashboard') {
+          // to reload home page
+          this.$router.replace({ path: '/redirect' + tag.fullPath })
+        } else {
+          this.$router.push('/')
+        }
+      }
+    },
+    openMenu(tag, e) {
+      const offsetLeft = this.$el.getBoundingClientRect().left
+      const offsetWidth = this.$el.offsetWidth
+      const maxLeft = offsetWidth - 105
+      const left = e.clientX - offsetLeft + 115
+
+      if(left > maxLeft) {
+        this.left = maxLeft
+      } else {
+        this.left = left
+      }
+
+      this.top = e.clientY + 20
+      this.visible = true
+      this.selectedTag = tag
+    },
+    closeMenu() {
+      this.visible = false
     }
   },
   mounted() {
     this.initTags()
+    this.addTags()
     console.log(this.visitedTags);
-    console.log(path);
   }
 }
 </script>

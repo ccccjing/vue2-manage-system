@@ -2,7 +2,7 @@
   <el-container>
     <el-main>
       <transition name="fade-transform" mode="out-in">
-        <keep-alive>
+        <keep-alive :include="cachedTags">
           <router-view></router-view>
         </keep-alive>
       </transition>
@@ -11,8 +11,12 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: "CommonMain",
+  computed: {
+    ...mapGetters(['cachedTags'])
+  },
 };
 </script>
 

@@ -6,6 +6,17 @@ Vue.use(VueRouter)
 
 export const routes = [
   {
+    hidden: true,
+    path: '/redirect',
+    component: CommonLayout,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/RedirectPage/RedirectPage.vue')
+      }
+    ]
+  },
+  {
     path: '/',
     component: CommonLayout,
     redirect: '/home-page',
