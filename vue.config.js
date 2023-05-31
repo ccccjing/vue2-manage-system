@@ -3,7 +3,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   lintOnSave: false,
   devServer: {
-    open: true
+    open: true,
+    setupMiddlewares: require('./mock/user.js')
   },
   configureWebpack: {
     resolve: {
