@@ -1,6 +1,6 @@
 import request from "@/utils/request"
 
-export function login(data) {
+export function reqLogin(data) {
   return request({
     path: '/user/login',
     method: 'post',

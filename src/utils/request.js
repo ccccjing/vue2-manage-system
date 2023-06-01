@@ -8,15 +8,15 @@ const request = axios.create({
 request.interceptors.request.use(config => {
   const { path } = config
   config.baseURL = config.baseURL + path
-  console.log(config)
+
   return config
 }, error => {
   console.log(error)
 })
 
 request.interceptors.response.use(response => {
-  console.log(response)
-  return response
+
+  return response.data
 }, error => {
   console.log(error)
 })

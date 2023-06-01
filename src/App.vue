@@ -5,13 +5,9 @@
 </template>
 
 <script>
-import { login } from '@/api/user'
 
 export default {
-  name: 'App',
-  mounted() {
-    login({username: 'admin', passowrd: '111111'}).then(res => console.log(res));
-  }
+  name: 'App'
 }
 </script>
 

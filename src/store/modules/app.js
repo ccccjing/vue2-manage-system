@@ -17,7 +17,7 @@ const actions = {
 }
 
 export default {
-  namespance: true,
+  namespace: true,
   state,
   mutations,
   actions
