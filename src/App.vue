@@ -5,23 +5,19 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { login } from '@/api/user'
 
 export default {
   name: 'App',
   mounted() {
-    axios({
-      url: '/user/userInfo',
-      method: 'get'
-    }).then(res => {
-      console.log(res)
-    })
+    login({username: 'admin', passowrd: '111111'}).then(res => console.log(res));
   }
 }
 </script>
 
 <style lang="scss">
-html,body {
+html,
+body {
   padding: 0;
   margin: 0;
   #app {

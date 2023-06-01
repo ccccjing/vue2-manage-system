@@ -4,7 +4,7 @@ module.exports = defineConfig({
   lintOnSave: false,
   devServer: {
     open: true,
-    setupMiddlewares: require('./mock/user.js')
+    // setupMiddlewares: require('./mock/user.js')
   },
   configureWebpack: {
     resolve: {

@@ -30,6 +30,12 @@ export const routes = [
     ]
   },
   {
+    hidden: true,
+    path: '/login',
+    component: () => import('@/views/Login'),
+    name: 'Login',
+  },
+  {
     path: '/system-manage',
     component: CommonLayout,
     redirect: '/system-manage/permission-manage',

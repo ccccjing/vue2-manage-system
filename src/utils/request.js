@@ -6,6 +6,9 @@ const request = axios.create({
 })
 
 request.interceptors.request.use(config => {
+  const { path } = config
+  config.baseURL = config.baseURL + path
+  console.log(config)
   return config
 }, error => {
   console.log(error)
