@@ -3,13 +3,18 @@
     <el-row>
       <el-col :span="12" :xs="0">&nbsp;;</el-col>
       <el-col :span="12" :xs="24">
-        <el-form class="login_form">
+        <el-form
+          class="login_form"
+          :model="loginForm"
+          :rules="rules"
+          ref="loginForm"
+        >
           <h1>Hello</h1>
           <h2>欢迎使用管理系统</h2>
-          <el-form-item>
+          <el-form-item prop="username">
             <el-input prefix-icon="el-icon-user" v-model="loginForm.username"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="password">
             <el-input
               type="password"
               prefix-icon="el-icon-lock"
@@ -37,12 +42,30 @@ import { getTime } from '@/utils/time'
 export default {
   name: 'Login',
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if(value.length >= 5) {
+        callback()
+      } else {
+        callback(new Error('账号长度至少为5位'))
+      }
+    };
+    const validatePassword = (rule, value, callback) => {
+      if(value.length >= 6) {
+        callback()
+      } else {
+        callback(new Error('密码长度至少6位'))
+      }
+    }
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: 'atguigu123'
       },
-      isLoading: false
+      isLoading: false,
+      rules: {
+        username: { validator: validateUsername, trigger: 'change' },
+        password: { validator: validatePassword, tregger: 'change' }
+      }
     }
   },
   methods: {
@@ -50,7 +73,8 @@ export default {
       this.isLoading = true
       try {
         await this.$store.dispatch('userLogin', this.loginForm)
-        this.$router.push('/')
+        let redirect = this.$route.query.redirect
+        this.$router.push({path: redirect || '/'})
         Notification({
           title: `Hi，${getTime()}好呀！`,
           type: 'success',

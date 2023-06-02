@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getToken } from "./auth";
 
 const request = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -7,8 +8,10 @@ const request = axios.create({
 
 request.interceptors.request.use(config => {
   const { path } = config
+  const token = getToken()
   config.baseURL = config.baseURL + path
-
+  config.headers.token = token
+  console.log(config)
   return config
 }, error => {
   console.log(error)

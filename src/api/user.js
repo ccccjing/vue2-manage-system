@@ -1,8 +1,25 @@
+import { getToken } from "@/utils/auth"
 import request from "@/utils/request"
+
+// export function reqLogin(data) {
+//   return request({
+//     path: '/user/login',
+//     method: 'post',
+//     data
+//   })
+// }
+
+// export function getUserInfo() {
+//   return request({
+//     path: '/user/userInfo',
+//     method: 'get',
+//     data: getToken()
+//   })
+// }
 
 export function reqLogin(data) {
   return request({
-    path: '/user/login',
+    path: '/admin/acl/index/login',
     method: 'post',
     data
   })
@@ -10,15 +27,14 @@ export function reqLogin(data) {
 
 export function getUserInfo() {
   return request({
-    path: '/user/userInfo',
+    path: '/admin/acl/index/info',
     method: 'get'
   })
 }
 
-export function getMovies() {
+export function reqLogout() {
   return request({
-    path: '/movies',
-    method: 'post',
-    data: {username: 'admin', passowrd: '111111'}
+    path: '/admin/acl/index/logout',
+    method: 'post'
   })
 }

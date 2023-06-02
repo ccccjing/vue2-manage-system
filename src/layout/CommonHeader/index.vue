@@ -1,27 +1,56 @@
 <template>
   <div class="header">
     <i class="el-icon-menu" @click="toggleAside"></i>
-    <el-dropdown trigger="click">
+    <i class="el-icon-full-screen" @click="fullScreen"></i>
+    <i class="el-icon-setting" @click="toggleAside"></i>
+    <el-dropdown @command="handleCommand">
       <span class="el-dropdown-link">
          <el-avatar
          size='medium'
-         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+         :src="avatar"
          ></el-avatar>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>个人中心</el-dropdown-item>
-        <el-dropdown-item>退出</el-dropdown-item>
+        <el-dropdown-item>{{username}}</el-dropdown-item>
+        <el-dropdown-item command="1">个人中心</el-dropdown-item>
+        <el-dropdown-item command="2">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   name: "CommonHeader",
+  computed: {
+    ...mapGetters(['username', 'avatar'])
+  },
   methods: {
+    // 开关菜单栏
     toggleAside() {
       this.$store.dispatch('toggleAside')
+    },
+    // 全屏模式
+    fullScreen() {
+      let full = document.fullscreenElement
+      if(!full) {
+        document.documentElement.requestFullscreen()
+      } else {
+        document.exitFullscreen()
+      }
+    },
+    // 退出登录
+    async handleCommand(command) {
+      if(command === '1') {
+        this.$store.dispatch('userLogout')
+      } else if(command === '2') {
+        await this.$store.dispatch('userLogout')
+        this.$router.push({
+          path: '/login',
+          query: {redirect: this.$route.path}
+        })
+      }
     }
   }
 };
@@ -29,6 +58,7 @@ export default {
 
 <style lang="scss" scoped>
 .header {
+  position: relative;
   background-color: #999;
   color: #333;
   line-height: 60px;
@@ -36,6 +66,17 @@ export default {
     margin-left: 20px;
     cursor: pointer;
     color: #fff;
+  }
+  .username,
+  .el-icon-full-screen,
+  .el-icon-setting {
+    position: absolute;
+    top: 50%;
+    right: 110px;
+    transform: translateY(-50%);
+  }
+  .el-icon-setting {
+    right: 80px
   }
   .el-dropdown {
     width: 64px;

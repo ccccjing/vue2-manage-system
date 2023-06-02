@@ -1,5 +1,5 @@
 <template>
-  <el-container>
+  <el-container style="overflow: auto">
     <el-main>
       <transition name="fade-transform" mode="out-in">
         <keep-alive :include="cachedTags">
@@ -23,9 +23,8 @@ export default {
 <style lang="scss" scoped>
 .el-main {
   width: 100%;
-  padding: 0 20px;
-  height: calc(100% - 60px);
-  overflow: hidden;
-  overflow-y: auto;
+  padding: 20px;
+  height: 100%;
+  overflow: auto;
 }
 </style>

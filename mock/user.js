@@ -43,8 +43,8 @@ Mock.mock('/dev-api/user/login', 'post', config => {
 })
 
 Mock.mock('/dev-api/user/userInfo', 'get', config => {
-  const { token } = config.query
-  const info = users[token]
+  const info = users[config.body]
+  console.log(info)
 
   if (!info) {
     return {
