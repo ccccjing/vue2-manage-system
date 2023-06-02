@@ -1,57 +1,88 @@
 <template>
-  <el-card class="box-card">
-    <!-- 添加按钮 -->
-    <el-button type="primary" icon="el-icon-plus">添加产品</el-button>
-    <!-- 展示表格 -->
-    <el-table border :data="trademarkList">
-      <el-table-column
-        label="序号"
-        width="80"
-        align="center"
-        type="index"
-      ></el-table-column>
-      <el-table-column label="产品名称" prop="tmName"></el-table-column>
-      <el-table-column label="产品Logo">
-        <template slot-scope="scope">
-          <img
-            :src="scope.row.logoUrl"
-            alt=""
-            style="width: 80px; height: 80px"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="产品操作">
-        <template>
-          <el-button
-            type="primary"
-            icon="el-icon-edit"
-            size="small"
-          ></el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="small"
-          ></el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage"
-      :page-sizes="[3, 5, 7, 9]"
-      :page-size="pageSize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
-      background
-    >
-    </el-pagination>
-  </el-card>
+  <div>
+    <el-card class="box-card">
+      <!-- 添加按钮 -->
+      <el-button type="primary" icon="el-icon-plus" @click="addProduct"
+        >添加产品</el-button
+      >
+      <!-- 展示表格 -->
+      <el-table border :data="trademarkList" v-loading="loading">
+        <el-table-column
+          label="序号"
+          width="80"
+          align="center"
+          type="index"
+        ></el-table-column>
+        <el-table-column label="产品名称" prop="tmName"></el-table-column>
+        <el-table-column label="产品Logo">
+          <template slot-scope="scope">
+            <img
+              :src="scope.row.logoUrl"
+              alt=""
+              style="width: 80px; height: 80px"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="产品操作">
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              icon="el-icon-edit"
+              size="small"
+              @click="editProduct(scope.row)"
+            ></el-button>
+            <el-button
+              type="danger"
+              icon="el-icon-delete"
+              size="small"
+            ></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <!-- 分页器 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-sizes="[3, 5, 7, 9]"
+        :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        background
+      >
+      </el-pagination>
+    </el-card>
+    <el-dialog :title="productForm.id?'修改产品':'添加产品'" :visible.sync="dialogFormVisible">
+      <el-form label-position="left" label-width="80px" v-loading="isLoading">
+        <el-form-item label="产品名称">
+          <el-input v-model="productForm.tmName"></el-input>
+        </el-form-item>
+        <el-form-item label="产品LOGO">
+          <el-upload
+            class="avatar-uploader"
+            action="/dev-api/admin/product/fileUpload"
+            :show-file-list="false"
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleAvatarSuccess"
+          >
+            <img v-if="productForm.logoUrl" :src="productForm.logoUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm"  :loading="isLoading"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
-import { reqProduct } from "@/api/product";
+import { Message } from 'element-ui'
+import { reqProduct, reqAddOrUpdateProduct } from "@/api/product";
 export default {
   name: "ProductType",
   data() {
@@ -60,25 +91,83 @@ export default {
       pageSize: 3,
       total: 0,
       trademarkList: [],
+      loading: false,
+      isLoading: false,
+      dialogFormVisible: false,
+      productForm: {
+        tmName: "",
+        logoUrl: "",
+      },
     };
   },
   methods: {
     handleSizeChange(val) {
       this.pageSize = val;
-      this.getTrademark()
+      this.currentPage = 1;
+      this.getTrademark();
     },
     handleCurrentChange(val) {
       this.currentPage = val;
-      this.getTrademark()
+      this.getTrademark();
     },
     async getTrademark() {
+      this.loading = true;
       let result = await reqProduct(this.currentPage, this.pageSize);
+      this.loading = false;
       if (result.code === 200) {
         let { data } = result;
         this.total = data.total;
         this.trademarkList = data.records;
       }
     },
+    addProduct() {
+      this.dialogFormVisible = true;
+      this.productForm.tmName = ''
+      this.productForm.logoUrl = ''
+      this.productForm.id = 0
+    },
+    editProduct(row) {
+      this.dialogFormVisible = true;
+      Object.assign(this.productForm, row)
+      console.log(this.productForm)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG =
+        file.type === "image/jpeg" ||
+        file.type === "image/peg" ||
+        file.type === "image/gif";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    handleAvatarSuccess(res, file) {
+      this.productForm.logoUrl = URL.createObjectURL(file.raw);
+    },
+    async confirm() {
+      this.isLoading = true
+      let result = await reqAddOrUpdateProduct(this.productForm)
+      console.log(result)
+      if(result.code === 200) {
+        Message({
+          type: 'success',
+          message: this.productForm.id?'修改产品成功':'添加产品成功'
+        })
+        this.getTrademark(this.productForm.id?this.currentPage:'')
+      } else {
+        Message({
+          type: 'error',
+          message: this.productForm.id?'修改产品失败':'添加产品失败'
+        })
+      }
+      this.isLoading = false
+      this.dialogFormVisible = false
+    }
   },
   mounted() {
     this.getTrademark();
@@ -87,4 +176,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+::v-deep .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+::v-deep .avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+::v-deep .avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+::v-deep .avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
 </style>
