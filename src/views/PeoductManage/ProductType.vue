@@ -53,11 +53,18 @@
       </el-pagination>
     </el-card>
     <el-dialog :title="productForm.id?'修改产品':'添加产品'" :visible.sync="dialogFormVisible">
-      <el-form label-position="left" label-width="80px" v-loading="isLoading">
-        <el-form-item label="产品名称">
+      <el-form
+        label-position="left"
+        label-width="90px"
+        v-loading="isLoading"
+        :model="productForm"
+        :rules="rules"
+        ref="formRef"
+      >
+        <el-form-item label="产品名称" prop="tmName">
           <el-input v-model="productForm.tmName"></el-input>
         </el-form-item>
-        <el-form-item label="产品LOGO">
+        <el-form-item label="产品LOGO" prop="logoUrl">
           <el-upload
             class="avatar-uploader"
             action="/dev-api/admin/product/fileUpload"
@@ -86,9 +93,24 @@ import { reqProduct, reqAddOrUpdateProduct } from "@/api/product";
 export default {
   name: "ProductType",
   data() {
+    const validateTmName = (rule, value, callback) => {
+      if(value.trim().length >= 2) {
+        callback()
+      } else {
+        callback(new Error('产品名称需要两位及以上'))
+      }
+    };
+    const validateLogoUrl = (rule, value, callback) => {
+      if(value) {
+        callback()
+      } else {
+        callback(new Error('请上传图片'))
+      }
+    }
     return {
       currentPage: 1,
       pageSize: 3,
+      pages: '',
       total: 0,
       trademarkList: [],
       loading: false,
@@ -98,6 +120,10 @@ export default {
         tmName: "",
         logoUrl: "",
       },
+      rules: {
+        tmName: { required: true, validator: validateTmName, trigger: 'blur' },
+        logoUrl: { required: true, validator: validateLogoUrl }
+      }
     };
   },
   methods: {
@@ -118,6 +144,7 @@ export default {
         let { data } = result;
         this.total = data.total;
         this.trademarkList = data.records;
+        this.pages = data.pages
       }
     },
     addProduct() {
@@ -125,6 +152,7 @@ export default {
       this.productForm.tmName = ''
       this.productForm.logoUrl = ''
       this.productForm.id = 0
+      this.$refs.formRef?.clearValidate()
     },
     editProduct(row) {
       this.dialogFormVisible = true;
@@ -148,25 +176,33 @@ export default {
     },
     handleAvatarSuccess(res, file) {
       this.productForm.logoUrl = URL.createObjectURL(file.raw);
+      this.$refs.formRef?.clearValidate('logoUrl')
     },
     async confirm() {
-      this.isLoading = true
-      let result = await reqAddOrUpdateProduct(this.productForm)
-      console.log(result)
-      if(result.code === 200) {
-        Message({
-          type: 'success',
-          message: this.productForm.id?'修改产品成功':'添加产品成功'
-        })
-        this.getTrademark(this.productForm.id?this.currentPage:'')
-      } else {
-        Message({
-          type: 'error',
-          message: this.productForm.id?'修改产品失败':'添加产品失败'
-        })
-      }
-      this.isLoading = false
-      this.dialogFormVisible = false
+      this.$refs.formRef.validate(async (valid) => {
+        if(valid) {
+          this.isLoading = true
+          let result = await reqAddOrUpdateProduct(this.productForm)
+          console.log(result)
+          if(result.code === 200) {
+            Message({
+              type: 'success',
+              message: this.productForm.id?'修改产品成功':'添加产品成功'
+            })
+            this.getTrademark(this.productForm.id?this.currentPage:this.currentPage=this.pages)
+          } else {
+            Message({
+              type: 'error',
+              message: this.productForm.id?'修改产品失败':'添加产品失败'
+            })
+          }
+          this.isLoading = false
+          this.dialogFormVisible = false
+        } else {
+          return false
+        }
+      })
+      
     }
   },
   mounted() {
