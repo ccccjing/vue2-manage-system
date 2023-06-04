@@ -41,7 +41,6 @@ const actions = {
   },
   async userInfo({ commit }) {
     let result = await getUserInfo()
-    console.log(result)
     if (result.code === 200) {
       const { name, avatar, roles, introduce } = result.data
       commit('SET_NAME', name)

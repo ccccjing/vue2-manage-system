@@ -5,7 +5,10 @@ const getters = {
   routes: state => state.permission.routes,
   username: state => state.user.name,
   avatar: state => state.user.avatar,
-  token: state => state.user.token
+  token: state => state.user.token,
+  category1: state => state.category.category1,
+  category2: state => state.category.category2,
+  category3: state => state.category.category3
 }
 
 export default getters

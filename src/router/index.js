@@ -74,6 +74,12 @@ export const routes = [
         meta: { title: '产品类型' }
       },
       {
+        path: 'product-attr',
+        component: () => import('@/views/PeoductManage/ProductAttr'),
+        name: 'ProductAttr',
+        meta: { title: '产品属性' }
+      },
+      {
         path: 'product-audit',
         component: () => import('@/views/PeoductManage/ProductAudit.vue'),
         name: 'ProductAudit',

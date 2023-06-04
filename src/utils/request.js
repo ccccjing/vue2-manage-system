@@ -11,7 +11,6 @@ request.interceptors.request.use(config => {
   const token = getToken()
   config.baseURL = config.baseURL + path
   config.headers.token = token
-  console.log(config)
   return config
 }, error => {
   console.log(error)

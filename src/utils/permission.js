@@ -12,7 +12,6 @@ router.beforeEach(async (to, from, next) => {
 
   let token = getToken()
   let username = store.getters.username
-  console.log(token, username)
   if (token) {
     if (to.path === '/login') {
       next({ path: '/' })

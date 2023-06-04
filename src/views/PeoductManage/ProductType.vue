@@ -1,10 +1,12 @@
 <template>
   <div>
-    <el-card class="box-card">
+    <el-card>
       <!-- 添加按钮 -->
-      <el-button type="primary" icon="el-icon-plus" @click="addProduct"
-        >添加产品</el-button
-      >
+      <el-button
+        type="primary"
+        icon="el-icon-plus"
+        @click="addProduct"
+      >添加产品</el-button>
       <!-- 展示表格 -->
       <el-table border :data="trademarkList" v-loading="loading">
         <el-table-column
@@ -35,6 +37,7 @@
               type="danger"
               icon="el-icon-delete"
               size="small"
+              @click="delProduct(scope.row)"
             ></el-button>
           </template>
         </el-table-column>
@@ -43,7 +46,7 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage"
+        :current-page.sync="currentPage"
         :page-sizes="[3, 5, 7, 9]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -84,12 +87,22 @@
         >
       </div>
     </el-dialog>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogDelVisible"
+      width="30%">
+      <span>您确定删除该产品吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogDelVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirmDelproduct">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { Message } from 'element-ui'
-import { reqProduct, reqAddOrUpdateProduct } from "@/api/product";
+import { reqProduct, reqAddOrUpdateProduct, reqDelProduct } from "@/api/product";
 export default {
   name: "ProductType",
   data() {
@@ -110,12 +123,14 @@ export default {
     return {
       currentPage: 1,
       pageSize: 3,
-      pages: '',
+      pages: 0,
       total: 0,
+      id: 0,
       trademarkList: [],
       loading: false,
       isLoading: false,
       dialogFormVisible: false,
+      dialogDelVisible: false,
       productForm: {
         tmName: "",
         logoUrl: "",
@@ -136,6 +151,7 @@ export default {
       this.currentPage = val;
       this.getTrademark();
     },
+    // 获取产品列表
     async getTrademark() {
       this.loading = true;
       let result = await reqProduct(this.currentPage, this.pageSize);
@@ -147,6 +163,7 @@ export default {
         this.pages = data.pages
       }
     },
+    // 添加产品弹框
     addProduct() {
       this.dialogFormVisible = true;
       this.productForm.tmName = ''
@@ -154,11 +171,13 @@ export default {
       this.productForm.id = 0
       this.$refs.formRef?.clearValidate()
     },
+    // 修改产品弹框
     editProduct(row) {
       this.dialogFormVisible = true;
       Object.assign(this.productForm, row)
       console.log(this.productForm)
     },
+    // 图片上传前
     beforeAvatarUpload(file) {
       const isJPG =
         file.type === "image/jpeg" ||
@@ -174,10 +193,12 @@ export default {
       }
       return isJPG && isLt2M;
     },
+    // 图片上传成功
     handleAvatarSuccess(res, file) {
       this.productForm.logoUrl = URL.createObjectURL(file.raw);
       this.$refs.formRef?.clearValidate('logoUrl')
     },
+    // 添加、修改产品
     async confirm() {
       this.$refs.formRef.validate(async (valid) => {
         if(valid) {
@@ -189,7 +210,8 @@ export default {
               type: 'success',
               message: this.productForm.id?'修改产品成功':'添加产品成功'
             })
-            this.getTrademark(this.productForm.id?this.currentPage:this.currentPage=this.pages)
+            this.currentPage = this.productForm.id? this.currentPage : 1
+            this.getTrademark()
           } else {
             Message({
               type: 'error',
@@ -203,6 +225,30 @@ export default {
         }
       })
       
+    },
+    // 删除弹框
+    delProduct(row) {
+      this.dialogDelVisible = true
+      this.id = row.id
+    },
+    // 删除产品
+    async confirmDelproduct() {
+      let result = await reqDelProduct(this.id)
+      console.log(this.trademarkList.length)
+      if(result.code === 200) {
+        Message({
+          type: 'success',
+          message: '删除产品成功'
+        })
+      } else {
+        Message({
+          type: 'error',
+          message: '删除产品失败'
+        })
+      }
+      this.dialogDelVisible = false
+      this.currentPage = this.trademarkList.length > 1 ? this.currentPage : this.currentPage - 1
+      this.getTrademark(this.currentPage)
     }
   },
   mounted() {
