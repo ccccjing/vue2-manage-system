@@ -2,7 +2,7 @@
   <el-card style="marginBottom: 10px">
     <el-form inline>
       <el-form-item  label="一级分类">
-        <el-select v-model="category1Id" :disabled="!disabled">
+        <el-select v-model="category1Id" :disabled="disabled">
           <el-option
             v-for="item in category1"
             :key="item.id"
@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item  label="二级分类">
-        <el-select v-model="category2Id" :disabled="!disabled">
+        <el-select v-model="category2Id" :disabled="disabled">
           <el-option
             v-for="item in category2"
             :key="item.id"
@@ -22,7 +22,7 @@
         </el-select>
       </el-form-item>
       <el-form-item  label="三级分类">
-        <el-select v-model="category3Id" :disabled="!disabled">
+        <el-select v-model="category3Id" :disabled="disabled">
           <el-option
             v-for="item in category3"
             :key="item.id"

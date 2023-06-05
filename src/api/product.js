@@ -75,3 +75,10 @@ export function reqDeleteAttr(attrId) {
     method: 'delete'
   })
 }
+// -------------------------------------------SPU
+export function reqHasSpu(currentPage, pageSize, category3Id) {
+  return request({
+    path: `/admin/product/${currentPage}/${pageSize}?category3Id=${category3Id}`,
+    method: 'get'
+  })
+}

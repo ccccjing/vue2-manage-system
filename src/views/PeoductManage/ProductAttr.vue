@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Category :disabled="isShow"></Category>
+    <Category :disabled="!isShow"></Category>
     <el-card>
       <!-- 属性列表 -->
       <div v-show="isShow">
