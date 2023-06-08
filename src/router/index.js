@@ -83,7 +83,7 @@ export const routes = [
         path: 'product-spu',
         component: () => import('@/views/PeoductManage/ProductSPU'),
         name: 'ProductSPU',
-        meta: { title: 'SPU' }
+        meta: { title: 'SPU管理' }
       },
       {
         path: 'product-audit',

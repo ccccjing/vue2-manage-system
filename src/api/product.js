@@ -76,9 +76,55 @@ export function reqDeleteAttr(attrId) {
   })
 }
 // -------------------------------------------SPU
+// 获取已有spu品牌列表
 export function reqHasSpu(currentPage, pageSize, category3Id) {
   return request({
     path: `/admin/product/${currentPage}/${pageSize}?category3Id=${category3Id}`,
     method: 'get'
   })
 }
+// 获取spu品牌列表
+export function reqTrademarkList() {
+  return request({
+    path: '/admin/product/baseTrademark/getTrademarkList',
+    method: 'get'
+  })
+}
+// 获取品牌图片
+export function reqSpuImageList(spuId) {
+  return request({
+    path: `/admin/product/spuImageList/${spuId}`,
+    method: 'get'
+  })
+}
+// 获取品牌属性
+export function reqBaseSaleAttrList() {
+  return request({
+    path: '/admin/product/baseSaleAttrList',
+    method: 'get'
+  })
+}
+// 获取品牌已有属性
+export function reqSpuSaleAttrList(spuId) {
+  return request({
+    path: `/admin/product/spuSaleAttrList/${spuId}`,
+    method: 'get'
+  })
+}
+// 添加或修改品牌
+export function reqAddOrUpdateSpu(data) {
+  if (data.id) {
+    return request({
+      path: '/admin/product/updateSpuInfo',
+      method: 'post',
+      data
+    })
+  } else {
+    return request({
+      path: '/admin/product/saveSpuInfo',
+      method: 'post',
+      data
+    })
+  }
+}
+
