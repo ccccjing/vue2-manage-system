@@ -15,10 +15,22 @@
           <el-table-column label="SPU描述" prop="description" show-overflow-tooltip></el-table-column>
           <el-table-column label="操作" width="280">
             <template slot-scope="scope">
-              <el-button type="success" icon="el-icon-plus" size="mini"></el-button>
-              <el-button type="primary" icon="el-icon-edit" size="mini" @click="editSpu(1, scope.row)"></el-button>
-              <el-button type="info" icon="el-icon-view" size="mini"></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
+              <el-button
+                type="success"
+                icon="el-icon-plus"
+                size="mini"
+                title="添加SKU"
+                @click="addSku(scope.row)"
+              ></el-button>
+              <el-button
+                type="primary"
+                icon="el-icon-edit"
+                size="mini"
+                title="修改SPU"
+                @click="editSpu(1, scope.row)"
+              ></el-button>
+              <el-button type="info" icon="el-icon-view" size="mini" title="查看SKU"></el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" title="删除SPU"></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -38,7 +50,11 @@
         v-show="scene === 1"
         @changeScene="changeScene"
       ></spu-form>
-      <sku-form v-show="scene === 2"></sku-form>
+      <sku-form
+        ref="skuForm"
+        v-show="scene === 2"
+        @changeScene="changeScene"
+      ></sku-form>
     </el-card>
   </div>
 </template>
@@ -64,12 +80,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['category3Id'])
+    ...mapGetters(['category1Id', 'category2Id', 'category3Id'])
   },
   watch: {
     category3Id(val) {
       if (val) {
         this.getHasSpu()
+      }
+    },
+    scene(val) {
+      if (val) {
+        this.disabled = true
+      } else {
+        this.disabled = false
       }
     }
   },
@@ -107,7 +130,11 @@ export default {
     addSpu(scene) {
       this.scene = scene
       this.$refs.spuForm.initSpu(this.category3Id)
-    }
+    },
+    addSku(row) {
+      this.scene = 2
+      this.$refs.skuForm.initSku(this.category1Id, this.category2Id, row)
+    },
   },
 }
 </script>

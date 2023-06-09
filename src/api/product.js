@@ -127,4 +127,12 @@ export function reqAddOrUpdateSpu(data) {
     })
   }
 }
+// 新增SKU
+export function reqAddSku(data) {
+  return request({
+    path: '/admin/product/saveSkuInfo',
+    method: 'post',
+    data
+  })
+}
 
