@@ -29,8 +29,20 @@
                 title="修改SPU"
                 @click="editSpu(1, scope.row)"
               ></el-button>
-              <el-button type="info" icon="el-icon-view" size="mini" title="查看SKU"></el-button>
-              <el-button type="danger" icon="el-icon-delete" size="mini" title="删除SPU"></el-button>
+              <el-button
+                type="info" 
+                icon="el-icon-view" 
+                size="mini"
+                title="查看SKU"
+                @click="findSku(scope.row)"
+              ></el-button>
+              <el-button
+                type="danger"
+                icon="el-icon-delete"
+                size="mini"
+                title="删除SPU"
+                @click="deleteSpu(scope.row)"
+              ></el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -56,6 +68,18 @@
         @changeScene="changeScene"
       ></sku-form>
     </el-card>
+    <el-dialog title="SKU列表" :visible.sync="dialogTableVisible">
+      <el-table :data="skuArr" border>
+        <el-table-column prop="skuName" label="sku名称"></el-table-column>
+        <el-table-column prop="price" label="sku价格(元)"></el-table-column>
+        <el-table-column prop="weight" label="sku重量(克)"></el-table-column>
+        <el-table-column label="sku图片">
+          <template slot-scope="scope">
+            <img :src="`${scope.row.skuDefaultImg}`" alt="" style="width:80px;hieght:80px">
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -63,7 +87,7 @@
 import Category from '@/components/Category'
 import SpuForm from '@/views/PeoductManage/components/SpuForm.vue'
 import SkuForm from '@/views/PeoductManage/components/SkuForm.vue'
-import { reqHasSpu } from '@/api/product'
+import { reqHasSpu, reqSkuList, reqRemoveSpu } from '@/api/product'
 import { mapGetters } from 'vuex'
 export default {
   name: 'ProductSPU',
@@ -77,6 +101,8 @@ export default {
       records: [],
       total: 0,
       scene: 0,
+      skuArr: [],
+      dialogTableVisible: false
     }
   },
   computed: {
@@ -135,7 +161,44 @@ export default {
       this.scene = 2
       this.$refs.skuForm.initSku(this.category1Id, this.category2Id, row)
     },
+    async findSku(row) {
+      const result = await reqSkuList(row.id)
+      if (result.code === 200) {
+        this.skuArr = result.data || []
+        this.dialogTableVisible = true
+      }
+    },
+    deleteSpu(row) {
+      this.$confirm('此操作将永久删除该SPU, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const result = await reqRemoveSpu(row.id)
+        console.log(result)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getHasSpu(this.records.length>1?this.currentPage:this.currentPage-1)
+        } else {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+    }
   },
+  beforeDestroy() {
+    this.$store.commit('CLEAR_STATE')
+  }
 }
 </script>
 

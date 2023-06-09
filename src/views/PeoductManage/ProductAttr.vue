@@ -247,6 +247,9 @@ export default {
       });
     }
   },
+  beforeDestroy() {
+    this.$store.commit('CLEAR_STATE')
+  }
 }
 </script>
 

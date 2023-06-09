@@ -135,4 +135,17 @@ export function reqAddSku(data) {
     data
   })
 }
-
+// 获取sku列表
+export function reqSkuList(spuId) {
+  return request({
+    path: `/admin/product/findBySpuId/${spuId}`,
+    method: 'get'
+  })
+}
+// 
+export function reqRemoveSpu(spuId) {
+  return request({
+    path: `/admin/product/deleteSpu/${spuId}`,
+    method: 'delete'
+  })
+}

@@ -27,6 +27,16 @@ const mutations = {
   },
   GET_CATEGORY3_ID: (state, id) => {
     state.category3Id = id
+  },
+  CLEAR_STATE: (state) => {
+    state = {
+      category1: [],
+      category1Id: null,
+      category2: [],
+      category2Id: null,
+      category3: [],
+      category3Id: null
+    }
   }
 }
 
