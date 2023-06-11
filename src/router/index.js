@@ -86,6 +86,12 @@ export const routes = [
         meta: { title: 'SPU管理' }
       },
       {
+        path: 'product-sku',
+        component: () => import('@/views/PeoductManage/ProductSKU'),
+        name: 'ProductSKU',
+        meta: { title: 'SKU管理' }
+      },
+      {
         path: 'product-audit',
         component: () => import('@/views/PeoductManage/ProductAudit.vue'),
         name: 'ProductAudit',

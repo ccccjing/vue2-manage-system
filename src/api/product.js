@@ -149,3 +149,24 @@ export function reqRemoveSpu(spuId) {
     method: 'delete'
   })
 }
+// 获取SKU接口
+export function reqSkuArr(page, limit) {
+  return request({
+    path: `/admin/product/list/${page}/${limit}`,
+    method: 'get'
+  })
+}
+// sku上架
+export function reqOnSale(skuId) {
+  return request({
+    path: `/admin/product/onSale/${skuId}`,
+    method: 'get'
+  })
+}
+// sku下架
+export function reqCancelSale(skuId) {
+  return request({
+    path: `/admin/product/cancelSale/${skuId}`,
+    method: 'get'
+  })
+}
