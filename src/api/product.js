@@ -170,3 +170,17 @@ export function reqCancelSale(skuId) {
     method: 'get'
   })
 }
+// sku商品详情
+export function reqSkuInfo(skuId) {
+  return request({
+    path: `/admin/product/getSkuInfo/${skuId}`,
+    method: 'get'
+  })
+}
+// 
+export function reqDeleteSku(skuId) {
+  return request({
+    path: `/admin/product/deleteSku/${skuId}`,
+    method: 'delete'
+  })
+}

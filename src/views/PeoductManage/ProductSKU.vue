@@ -57,8 +57,18 @@
               icon="el-icon-edit"
               @click="updateSku"
             ></el-button>
-            <el-button size="mini" type="info" icon="el-icon-info"></el-button>
-            <el-button size="mini" type="danger" icon="el-icon-delete"></el-button>
+            <el-button
+              size="mini"
+              type="info"
+              icon="el-icon-info"
+              @click="open(scope.row)"
+            ></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              icon="el-icon-delete"
+              @click="deleteSku(scope.row)"
+            ></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -73,11 +83,71 @@
         background>
       </el-pagination>
     </el-card>
+    <el-drawer
+      title="商品详情"
+      :visible.sync="drawer"
+      :direction="direction"
+    >
+      <div class="drwaer">
+        <el-row>
+          <el-col :span="8">名称</el-col>
+          <el-col :span="16">{{ skuInfo.skuName }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">描述</el-col>
+          <el-col :span="16">{{ skuInfo.skuDesc }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">价格</el-col>
+          <el-col :span="16">{{ skuInfo.price}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">平台属性</el-col>
+          <el-col :span="16">
+            <el-tag
+              size="mini"
+              v-for="item in skuInfo.skuAttrValueList" 
+              :key="item.id"
+            >
+              {{ item.valueName }}
+            </el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">销售属性</el-col>
+          <el-col :span="16">
+            <el-tag
+              size="mini"
+              v-for="item in skuInfo.skuSaleAttrValueList" 
+              :key="item.id"
+            >
+              {{ item.saleAttrValueName }}
+            </el-tag>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">商品图片</el-col>
+          <el-col :span="16">
+            <el-carousel :interval="4000" type="card" height="200px">
+              <el-carousel-item v-for="item in skuInfo.skuImageList" :key="item.id">
+                <img :src="item.imgUrl">
+              </el-carousel-item>
+            </el-carousel>
+          </el-col>
+        </el-row>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { reqSkuArr, reqOnSale, reqCancelSale } from '@/api/product'
+import {
+  reqSkuArr,
+  reqOnSale,
+  reqCancelSale,
+  reqSkuInfo,
+  reqDeleteSku
+} from '@/api/product'
 import { Message } from 'element-ui'
 export default {
   name: 'ProductSKU',
@@ -87,7 +157,10 @@ export default {
       pageSize: 10,
       total: 0,
       skuArr: [],
-      loading: false
+      loading: false,
+      drawer: false,
+      direction: 'rtl',
+      skuInfo: []
     }
   },
   methods: {
@@ -130,6 +203,40 @@ export default {
         type: 'success',
         message: '开发中......'
       })
+    },
+    async open(row) {
+      this.drawer = true
+      const result = await reqSkuInfo(row.id)
+      if (result.code === 200) {
+        this.skuInfo = result.data
+      }
+      console.log(this.skuInfo)
+    },
+    deleteSku(row) {
+      this.$confirm('此操作将永久删除该SKU, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const result = await reqDeleteSku(row.id)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getHasSku(this.skuArr.length===1?this.currentPage-1:this.currentPage)
+        } else {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     }
   },
   mounted() {
@@ -139,5 +246,26 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.drwaer {
+  padding: 20px;
+  .el-row {
+    margin: 10px 0;
+    .el-tag {
+      margin: 3px;
+    }
+    .el-carousel__item h3 {
+      color: #475669;
+      font-size: 14px;
+      opacity: 0.75;
+      line-height: 200px;
+      margin: 0;
+    }
+    .el-carousel__item:nth-child(2n) {
+      background-color: #99a9bf;
+    }
+    .el-carousel__item:nth-child(2n+1) {
+      background-color: #d3dce6;
+    }
+  }
+}
 </style>
