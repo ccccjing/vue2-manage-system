@@ -69,28 +69,34 @@ export default {
     }
   },
   methods: {
-    async login() {
-      this.isLoading = true
-      try {
-        await this.$store.dispatch('userLogin', this.loginForm)
-        let redirect = this.$route.query.redirect
-        this.$router.push({path: redirect || '/'})
-        Notification({
-          title: `Hi，${getTime()}好呀！`,
-          type: 'success',
-          message: '欢迎回来',
-          duration: 3000
-        })
-        this.isLoading = false
-      } catch(error) {
-        Notification({
-          title: '失败',
-          type: 'error',
-          message: error.message,
-          duration: 3000
-        })
-        this.isLoading = false
-      }
+    login() {
+      this.$refs.loginForm.validate(async (valid) => {
+        if (valid) {
+          this.isLoading = true
+          try {
+            await this.$store.dispatch('userLogin', this.loginForm)
+            let redirect = this.$route.query.redirect
+            this.$router.push({path: redirect || '/'})
+            Notification({
+              title: `Hi，${getTime()}好呀！`,
+              type: 'success',
+              message: '欢迎回来',
+              duration: 3000
+            })
+            this.isLoading = false
+          } catch(error) {
+            Notification({
+              title: '失败',
+              type: 'error',
+              message: error.message,
+              duration: 3000
+            })
+            this.isLoading = false
+          }
+        } else {
+          return false;
+        }
+      });
     }
   }
 }

@@ -1,10 +1,10 @@
 <template>
-  <router-view></router-view>
+  <h1>MenuManagement</h1>
 </template>
 
 <script>
 export default {
-  name: 'PermissionManage'
+  name: 'MenuManagement'
 }
 </script>
 

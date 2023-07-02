@@ -45,7 +45,27 @@ export const routes = [
         path: 'permission-manage',
         component: () => import('@/views/SystemManage/PermissionManage'),
         name: 'PermissionManage',
-        meta: { title: '权限管理'}
+        meta: { title: '权限管理' },
+        children: [
+          {
+            path: 'user-management',
+            component: () => import('@/views/SystemManage/AuthorityManagement/UserManagement'),
+            name: 'UserManagement',
+            meta: { title: '用户管理' }
+          },
+          {
+            path: 'role-management',
+            component: () => import('@/views/SystemManage/AuthorityManagement/RoleManagement'),
+            name: 'RoleManagement',
+            meta: { title: '角色管理' }
+          },
+          {
+            path: 'menu-management',
+            component: () => import('@/views/SystemManage/AuthorityManagement/MenuManagement'),
+            name: 'MenuManagement',
+            meta: { title: '菜单管理' }
+          }
+        ]
       },
       {
         path: 'data-backup',
