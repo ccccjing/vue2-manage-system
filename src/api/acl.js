@@ -20,3 +20,16 @@ export const reqAddOrUpdateUser = (data) => {
     })
   }
 }
+
+export const reqAllRole = (userId) => {
+  return request({
+    path: `/admin/acl/user/toAssign/${userId}`,
+    method: 'GET'
+  })
+}
+
+export const reqSetUserRole = (data) => request({
+  path: '/admin/acl/user/doAssignRole',
+  method: 'POST',
+  data
+})

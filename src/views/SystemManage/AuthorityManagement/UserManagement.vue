@@ -25,7 +25,7 @@
         <el-table-column label="更新时间" width="160" prop="updateTime"></el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button type="success" size="mini" icon="el-icon-user">分配角色</el-button>
+            <el-button type="success" size="mini" icon="el-icon-user" @click="allotRole(scope.row)">分配角色</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="editUser(scope.row)">编辑</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
           </template>
@@ -65,11 +65,49 @@
         </div>
       </div>
     </el-drawer>
+    <el-drawer
+      title="分配角色(职位)"
+      :visible.sync="drawer1"
+      custom-class="drawer"
+    >
+       <div class="drawer__content">
+        <el-form>
+          <el-form-item label="用户名字:" :label-width="formLabelWidth">
+            <el-input :placeholder="userParams.name" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="职位列表:" :label-width="formLabelWidth">
+            <template>
+              <el-checkbox
+              :indeterminate="isIndeterminate"
+              v-model="checkAll"
+              @change="handleCheckAllChange"
+            >全选</el-checkbox>
+            <el-checkbox-group v-model="userRole" @change="handleCheckedRoleChange">
+              <el-checkbox
+                v-for="(role, index) in allRole"
+                :label="role"
+                :key="index"
+              >{{role.roleName}}</el-checkbox>
+            </el-checkbox-group>
+            </template>
+          </el-form-item>
+        </el-form>
+        <div class="drawer__footer">
+          <el-button @click="drawer1 = false">取 消</el-button>
+          <el-button type="primary" @click="confirmUserRole">确定</el-button>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import { reqUserInfo, reqAddOrUpdateUser } from '@/api/acl'
+import {
+  reqUserInfo,
+  reqAddOrUpdateUser,
+  reqAllRole,
+  reqSetUserRole
+} from '@/api/acl'
 
 export default {
   name: 'UserManagement',
@@ -96,14 +134,18 @@ export default {
       }
     }
     return {
+      cityOptions: ['上海', '北京', '广州', '深圳'],
       currentPage: 1,
       pageSize: 5,
       userData: [],
       total: 0,
       loading: false,
       drawer: false,
+      drawer1: false,
       formLabelWidth: '90px',
       isAdd: true,
+      checkAll: false,
+      isIndeterminate: true,
       userParams: {
         username: '',
         name: '',
@@ -113,7 +155,9 @@ export default {
         username: { required: true, trigger: 'blur', validator: validatorUsername },
         name: { required: true, trigger: 'blur', validator: validatorName },
         password: { required: true, trigger: 'blur', validator: validatorPassword}
-      }
+      },
+      userRole: [],
+      allRole: []
     }
   },
   methods: {
@@ -172,6 +216,8 @@ export default {
             this.drawer = false
             this.currentPage = this.userParams.id ? this.currentPage : this.currentPage = 1
             this.getUserData()
+            // 重载
+            window.location.reload()
           } else {
             this.$message({
               type: 'error',
@@ -183,6 +229,45 @@ export default {
         }
       });
     },
+    async allotRole(row) {
+      Object.assign(this.userParams, row)
+      const result = await reqAllRole(row.id)
+      if (result.code === 200) {
+        this.allRole = result.data?.allRolesList
+        this.userRole = result.data?.assignRoles
+        this.drawer1 = true
+      }
+      console.log(this.userRole)
+    },
+    handleCheckAllChange(val) {
+      this.userRole = val ? this.allRole : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedRoleChange(value) {
+      let checkedCount = value.length;
+      this.checkAll = checkedCount === this.allRole.length;
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.allRole.length;
+    },
+    async confirmUserRole() {
+      let data = {
+        userId: this.userParams.id,
+        roleIdList: this.userRole.map(item => item.id)
+      }
+      const result = await reqSetUserRole(data)
+      if (result.code === 200) {
+        this.$message({
+          message: '分配角色成功',
+          type: 'success'
+        })
+        this.drawer1 = false
+        this.getUserData()
+      } else {
+        this.$message({
+          message: '分配角色失败',
+          type: 'error'
+        })
+      }
+    }
   },
   mounted() {
     this.getUserData()
