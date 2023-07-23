@@ -3,18 +3,39 @@
     <el-card class="search">
       <el-form inline>
         <el-form-item label="用户名称：">
-          <el-input placeholder="请输入用户名称" size="medium"></el-input>
+          <el-input
+            placeholder="请输入用户名称"
+            size="medium"
+            v-model="keyword"
+            clearable
+          ></el-input>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary" size="medium">搜索</el-button>
-           <el-button size="medium">重置</el-button>
+            <el-button
+              type="primary"
+              size="medium"
+              :disabled="keyword?false:true"
+              @click="search"
+            >搜索</el-button>
+           <el-button size="medium" @click="reset">重置</el-button>
         </el-form-item>
       </el-form>
     </el-card>
     <el-card>
       <el-button type="primary" size="medium" @click="addUser">添加</el-button>
-      <el-button type="danger" size="medium">批量删除</el-button>
-      <el-table border style="margin: 10px 0" :data="userData" v-loading="loading">
+      <el-button
+        type="danger" 
+        size="medium"
+        :disabled="!multipleSelection.length>0"
+        @click="deleteUsers"
+      >批量删除</el-button>
+      <el-table
+        border
+        style="margin: 10px 0"
+        :data="userData" 
+        v-loading="loading"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" align="center"></el-table-column>
         <el-table-column label="#" align="center" type="index"></el-table-column>
         <el-table-column label="ID" prop="id"></el-table-column>
@@ -27,7 +48,7 @@
           <template slot-scope="scope">
             <el-button type="success" size="mini" icon="el-icon-user" @click="allotRole(scope.row)">分配角色</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="editUser(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteUser(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -85,7 +106,7 @@
             <el-checkbox-group v-model="userRole" @change="handleCheckedRoleChange">
               <el-checkbox
                 v-for="(role, index) in allRole"
-                :label="role"
+                :label="role.id"
                 :key="index"
               >{{role.roleName}}</el-checkbox>
             </el-checkbox-group>
@@ -106,7 +127,9 @@ import {
   reqUserInfo,
   reqAddOrUpdateUser,
   reqAllRole,
-  reqSetUserRole
+  reqSetUserRole,
+  reqRemoveUser,
+  reqRemoveUsers
 } from '@/api/acl'
 
 export default {
@@ -134,7 +157,6 @@ export default {
       }
     }
     return {
-      cityOptions: ['上海', '北京', '广州', '深圳'],
       currentPage: 1,
       pageSize: 5,
       userData: [],
@@ -157,7 +179,9 @@ export default {
         password: { required: true, trigger: 'blur', validator: validatorPassword}
       },
       userRole: [],
-      allRole: []
+      allRole: [],
+      multipleSelection: [],
+      keyword: ''
     }
   },
   methods: {
@@ -174,7 +198,7 @@ export default {
     },
     async getUserData() {
       this.loading = true
-      const result = await reqUserInfo(this.currentPage, this.pageSize)
+      const result = await reqUserInfo(this.currentPage, this.pageSize, this.keyword)
       if (result.code === 200) {
         this.userData = result.data.records
         this.total = result.data.total
@@ -234,13 +258,13 @@ export default {
       const result = await reqAllRole(row.id)
       if (result.code === 200) {
         this.allRole = result.data?.allRolesList
-        this.userRole = result.data?.assignRoles
+        this.userRole = result.data?.assignRoles?.map(item => item.id)
         this.drawer1 = true
       }
       console.log(this.userRole)
     },
     handleCheckAllChange(val) {
-      this.userRole = val ? this.allRole : [];
+      this.userRole = val ? this.allRole.map(item => item.id) : [];
       this.isIndeterminate = false;
     },
     handleCheckedRoleChange(value) {
@@ -251,7 +275,7 @@ export default {
     async confirmUserRole() {
       let data = {
         userId: this.userParams.id,
-        roleIdList: this.userRole.map(item => item.id)
+        roleIdList: this.userRole
       }
       const result = await reqSetUserRole(data)
       if (result.code === 200) {
@@ -267,6 +291,70 @@ export default {
           type: 'error'
         })
       }
+    },
+    deleteUser(row) {
+      this.$confirm('此操作将删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const result = await reqRemoveUser(row.id)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getUserData()
+        } else {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    deleteUsers() {
+      this.$confirm('此操作将删除所有选中用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let idList = this.multipleSelection.map(item => item.id)
+        const result = await reqRemoveUsers(idList)
+        console.log(result)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getUserData()
+        } else {
+          this.$message({
+            type: 'error',
+            message: '删除失败!'
+          });
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      })
+    },
+    search() {
+      this.getUserData()
+    },
+    reset() {
+      this.keyword = ''
+      this.getUserData()
     }
   },
   mounted() {

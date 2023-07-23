@@ -1,7 +1,7 @@
 import request from "@/utils/request";
 
-export const reqUserInfo = (currentPage, pageSize) => request({
-  path: `/admin/acl/user/${currentPage}/${pageSize}`,
+export const reqUserInfo = (currentPage, pageSize, username) => request({
+  path: `/admin/acl/user/${currentPage}/${pageSize}/?username=${username}`,
   method: 'GET'
 })
 
@@ -31,5 +31,16 @@ export const reqAllRole = (userId) => {
 export const reqSetUserRole = (data) => request({
   path: '/admin/acl/user/doAssignRole',
   method: 'POST',
+  data
+})
+
+export const reqRemoveUser = (userID) => request({
+  path: `/admin/acl/user/remove/${userID}`,
+  method: 'DELETE'
+})
+
+export const reqRemoveUsers = (data) => request({
+  path: '/admin/acl/user/batchRemove',
+  method: 'DELETE',
   data
 })
