@@ -31,7 +31,7 @@
       >批量删除</el-button>
       <el-table
         border
-        style="margin: 10px 0"
+        style="margin: 10px 0;"
         :data="userData" 
         v-loading="loading"
         @selection-change="handleSelectionChange"
@@ -196,6 +196,7 @@ export default {
       this.currentPage = val
       this.getUserData()
     },
+    // 获取用户
     async getUserData() {
       this.loading = true
       const result = await reqUserInfo(this.currentPage, this.pageSize, this.keyword)
@@ -205,6 +206,7 @@ export default {
       }
       this.loading =false
     },
+    // 添加用户
     addUser() {
       this.userParams = {
         username: '',
@@ -217,6 +219,7 @@ export default {
         this.$refs.formRef.resetFields()
       })
     },
+    // 编辑用户
     editUser(row) {
       this.drawer = true
       this.isAdd = false
@@ -225,9 +228,11 @@ export default {
         Object.assign(this.userParams, row)
       })
     },
+    // 取消
     cancelForm() {
       this.drawer = false
     },
+    // 确定
     confirm() {
       this.$refs.formRef.validate(async (valid) => {
         if (valid) {
@@ -253,6 +258,7 @@ export default {
         }
       });
     },
+    // 角色信息
     async allotRole(row) {
       Object.assign(this.userParams, row)
       const result = await reqAllRole(row.id)
@@ -263,6 +269,7 @@ export default {
       }
       console.log(this.userRole)
     },
+    // 选中所有
     handleCheckAllChange(val) {
       this.userRole = val ? this.allRole.map(item => item.id) : [];
       this.isIndeterminate = false;
@@ -272,6 +279,7 @@ export default {
       this.checkAll = checkedCount === this.allRole.length;
       this.isIndeterminate = checkedCount > 0 && checkedCount < this.allRole.length;
     },
+    // 修改用户角色
     async confirmUserRole() {
       let data = {
         userId: this.userParams.id,
@@ -292,6 +300,7 @@ export default {
         })
       }
     },
+    // 删除用户
     deleteUser(row) {
       this.$confirm('此操作将删除该用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -321,6 +330,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    // 批量删除用户
     deleteUsers() {
       this.$confirm('此操作将删除所有选中用户, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -349,9 +359,11 @@ export default {
         });          
       })
     },
+    // 搜索用户
     search() {
       this.getUserData()
     },
+    // 重置
     reset() {
       this.keyword = ''
       this.getUserData()
