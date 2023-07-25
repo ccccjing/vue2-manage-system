@@ -48,7 +48,23 @@ export const reqRemoveUsers = (data) => request({
 })
 
 // ---------------------------------角色管理------------------------------
-export const reqRoleList = (currentPage, pageSize) => request({
-  path: `/admin/acl/role/${currentPage}/${pageSize}`,
+export const reqRoleList = (currentPage, pageSize, roleName) => request({
+  path: `/admin/acl/role/${currentPage}/${pageSize}/?roleName=${roleName}`,
   method: 'GET'
 })
+
+export const reqAddOrUpdateRole = (data) => {
+  if (data.id) {
+    return request({
+      path: '/admin/acl/role/update',
+      method: 'PUT',
+      data
+    })
+  } else {
+    return request({
+      path: '/admin/acl/role/save',
+      method: 'POST',
+      data
+    })
+  }
+}
