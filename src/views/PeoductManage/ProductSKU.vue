@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-card>
-      <el-table border :data="skuArr" v-loading="loading">
+      <el-table border :data="skuArr" v-loading="loading" max-height="430">
         <el-table-column
           label="序号"
           type="index"

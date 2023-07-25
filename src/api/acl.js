@@ -68,3 +68,8 @@ export const reqAddOrUpdateRole = (data) => {
     })
   }
 }
+
+export const reqRemoveRole = (roleId) => request({
+  path: `/admin/acl/role/remove/${roleId}`,
+  method: 'DELETE'
+})

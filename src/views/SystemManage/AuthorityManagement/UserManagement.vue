@@ -32,6 +32,7 @@
       <el-table
         border
         style="margin: 10px 0;"
+         max-height="310"
         :data="userData" 
         v-loading="loading"
         @selection-change="handleSelectionChange"

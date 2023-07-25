@@ -18,17 +18,17 @@
     </el-card>
     <el-card>
       <el-button type="primary" size="medium" @click="addRole">添加角色</el-button>
-      <el-table border :data="roleList" v-loading="loading">
-        <el-table-column label="#" align="center" type="index"></el-table-column>
-        <el-table-column label="ID" prop="id"></el-table-column>
+      <el-table border :data="roleList" v-loading="loading" max-height="310">
+        <el-table-column label="#" align="center" type="index" width="80"></el-table-column>
+        <el-table-column label="ID" prop="id" width="80"></el-table-column>
         <el-table-column label="角色名称" prop="roleName" width="160"></el-table-column>
         <el-table-column label="创建时间" prop="createTime" width="160"></el-table-column>
         <el-table-column label="更新时间" prop="updateTime" width="160"></el-table-column>
-        <el-table-column label="操作" width="300" align="center">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button type="success" size="mini" icon="el-icon-user">分配权限</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateRole(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete">删除</el-button>
+            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteRole(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -60,7 +60,8 @@
 <script>
 import {
   reqRoleList,
-  reqAddOrUpdateRole
+  reqAddOrUpdateRole,
+  reqRemoveRole
 } from '@/api/acl'
 
 export default {
@@ -151,6 +152,27 @@ export default {
     updateRole(row) {
       this.dialogFormVisible = true
       Object.assign(this.form, row)
+    },
+    deleteRole(row) {
+      this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const result = await reqRemoveRole(row.id)
+        if (result.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getRoleList()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     }
   },
   mounted() {
