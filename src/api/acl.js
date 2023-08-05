@@ -73,3 +73,8 @@ export const reqRemoveRole = (roleId) => request({
   path: `/admin/acl/role/remove/${roleId}`,
   method: 'DELETE'
 })
+
+export const reqAllPermission = (roleId) => request({
+  path: `/admin/acl/permission/toAssign/${roleId}`,
+  method: 'GET'
+})

@@ -26,7 +26,7 @@
         <el-table-column label="更新时间" prop="updateTime" width="160"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="success" size="mini" icon="el-icon-user">分配权限</el-button>
+            <el-button type="success" size="mini" icon="el-icon-user" @click="grant(scope.row)">分配权限</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateRole(scope.row)">编辑</el-button>
             <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteRole(scope.row)">删除</el-button>
           </template>
@@ -54,6 +54,27 @@
         <el-button type="primary" @click="confirm" :loading="confirmBtn">确 定</el-button>
       </div>
     </el-dialog>
+    <el-drawer
+      title="分配权限"
+      :visible.sync="drawer"
+      custom-class="demo-drawer"
+      ref="drawer"
+      >
+      <div class="demo-drawer__content">
+        <el-tree
+          :data="menuList"
+          show-checkbox
+          node-key="id"
+          default-expand-all
+          :default-checked-keys="[5]"
+          :props="defaultProps">
+        </el-tree>
+        <div class="demo-drawer__footer">
+          <el-button @click="drawer = false">取 消</el-button>
+          <el-button type="primary">确 定</el-button>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -61,7 +82,8 @@
 import {
   reqRoleList,
   reqAddOrUpdateRole,
-  reqRemoveRole
+  reqRemoveRole,
+  reqAllPermission
 } from '@/api/acl'
 
 export default {
@@ -90,6 +112,47 @@ export default {
         roleName: [
           { required: true, trigger: 'blur', validator: validatorRoleName}
         ]
+      },
+      drawer: false,
+      menuList: [],
+      data: [{
+          id: 1,
+          label: '一级 1',
+          children: [{
+            id: 4,
+            label: '二级 1-1',
+            children: [{
+              id: 9,
+              label: '三级 1-1-1'
+            }, {
+              id: 10,
+              label: '三级 1-1-2'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '一级 2',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
+          }, {
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '一级 3',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2'
+          }]
+        }],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
       }
     }
   },
@@ -173,6 +236,14 @@ export default {
           message: '已取消删除'
         });          
       });
+    },
+    async grant(row) {
+      Object.assign(this.form, row)
+      const result = await reqAllPermission(row.id)
+      if (result.code === 200) {
+        this.menuList = result.data
+      }
+      this.drawer = true
     }
   },
   mounted() {
@@ -189,5 +260,21 @@ export default {
 .table {
   margin: 10px 0;
   height: 60%;
+}
+.demo-drawer {
+  height: 100%;
+  .demo-drawer__content {
+    .el-tree {
+      position: absolute;
+      width: 100%;
+      height: 80%;
+      overflow-y: auto;
+    }
+    .demo-drawer__footer {
+      position: fixed;
+      bottom: 8px;
+      right: 10px;
+    }
+  }
 }
 </style>
