@@ -78,3 +78,35 @@ export const reqAllPermission = (roleId) => request({
   path: `/admin/acl/permission/toAssign/${roleId}`,
   method: 'GET'
 })
+
+export const reqSetPermission = (data) => request({
+  path: '/admin/acl/permission/doAssignAcl',
+  method: 'POST',
+  data
+})
+
+export const reqHasPermission = () => request({
+  path: '/admin/acl/permission',
+  method: 'GET'
+})
+
+export const reqAddOrUpdateMenu = (data) => {
+  if (data.id) {
+    return request({
+      path: '/admin/acl/permission/update',
+      method: 'PUT',
+      data
+    })
+  } else {
+    return request({
+      path: '/admin/acl/permission/save',
+      method: 'POST',
+      data
+    })
+  }
+}
+
+export const reqRemovePermission = (id) => request({
+  path: `/admin/acl/permission/remove/${id}`,
+  method: 'DELETE'
+})

@@ -62,16 +62,17 @@
       >
       <div class="demo-drawer__content">
         <el-tree
+          ref="tree"
           :data="menuList"
           show-checkbox
           node-key="id"
           default-expand-all
-          :default-checked-keys="[5]"
+          :default-checked-keys="menuArr"
           :props="defaultProps">
         </el-tree>
         <div class="demo-drawer__footer">
           <el-button @click="drawer = false">取 消</el-button>
-          <el-button type="primary">确 定</el-button>
+          <el-button type="primary" @click="confirm">确 定</el-button>
         </div>
       </div>
     </el-drawer>
@@ -83,7 +84,8 @@ import {
   reqRoleList,
   reqAddOrUpdateRole,
   reqRemoveRole,
-  reqAllPermission
+  reqAllPermission,
+  reqSetPermission
 } from '@/api/acl'
 
 export default {
@@ -115,45 +117,11 @@ export default {
       },
       drawer: false,
       menuList: [],
-      data: [{
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
       defaultProps: {
         children: 'children',
         label: 'name'
-      }
+      },
+      menuArr: []
     }
   },
   methods: {
@@ -242,8 +210,49 @@ export default {
       const result = await reqAllPermission(row.id)
       if (result.code === 200) {
         this.menuList = result.data
+        this.menuArr = this.filterMenuList(this.menuList, [])
       }
       this.drawer = true
+    },
+    filterMenuList(arr, initArr) {
+      arr.forEach(item => {
+        if (item.select && item.level === 4) {
+          initArr.push(item.id)
+        }
+        if ( item.children && item.children.length > 0) {
+          this.filterMenuList(item.children, initArr)
+        }
+      })
+      return initArr
+    },
+    async confirm() {
+      let roleId = this.form.id
+      let checkedId = this.$refs.tree.getCheckedKeys()
+      let halfId = this.$refs.tree.getHalfCheckedKeys()
+      let permissionIdList = checkedId.concat(halfId)
+      let permissionVo = {
+        permissionIdList,
+        roleId
+      }
+      const result = await reqSetPermission(permissionVo)
+      if (result.code === 200) {
+        this.drawer = false
+        this.$message({
+          showClose: true,
+          message: '分配权限成功',
+          type: 'success'
+        });
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000)
+        // window.location.reload()
+      } else {
+        this.$message({
+          showClose: true,
+          message: '分配权限失败',
+          type: 'error'
+        });
+      }
     }
   },
   mounted() {
