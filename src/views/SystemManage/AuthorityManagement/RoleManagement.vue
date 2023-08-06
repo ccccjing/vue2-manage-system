@@ -134,6 +134,7 @@ export default {
       this.currentPage = val
       this.getRoleList()
     },
+    // 获取角色列表
     async getRoleList() {
       this.loading = true
       const result = await reqRoleList(this.currentPage, this.pageSize, this.keyword)
@@ -144,13 +145,16 @@ export default {
       }
       this.loading = false
     },
+    // 搜索角色
     search() {
       this.getRoleList()
     },
+    // 重置
     reset() {
       this.keyword = ''
       this.getRoleList()
     },
+    // 添加角色
     addRole() {
       this.form.roleName = ''
       this.dialogFormVisible = true
@@ -180,10 +184,12 @@ export default {
       })
       this.confirmBtn = false
     },
+    // 修改角色
     updateRole(row) {
       this.dialogFormVisible = true
       Object.assign(this.form, row)
     },
+    // 删除角色
     deleteRole(row) {
       this.$confirm('此操作将永久删除该角色, 是否继续?', '提示', {
         confirmButtonText: '确定',
@@ -205,6 +211,7 @@ export default {
         });          
       });
     },
+    // 获取所有角色权限
     async grant(row) {
       Object.assign(this.form, row)
       const result = await reqAllPermission(row.id)

@@ -80,6 +80,7 @@ export default {
     }
   },
   methods: {
+    // 获取已有菜单
     async getHasPermission() {
       this.loading = true
       const result = await reqHasPermission()
@@ -89,6 +90,7 @@ export default {
       }
       this.loading = false
     },
+    // 添加菜单
     addPermission(row) {
       Object.assign(this.form, {
         name: '',
@@ -99,6 +101,7 @@ export default {
       this.dialogFormVisible = true
       console.log(row)
     },
+    // 编辑菜单
     editPermission(row) {
       Object.assign(this.form, row)
       this.dialogFormVisible = true
@@ -121,6 +124,7 @@ export default {
       }
       this.btnLoading = false
     },
+    // 删除菜单
     deletePremission(row) {
       this.$confirm('此操作将永久删除该菜单, 是否继续?', '提示', {
         confirmButtonText: '确定',

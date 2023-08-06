@@ -48,11 +48,12 @@ export const reqRemoveUsers = (data) => request({
 })
 
 // ---------------------------------角色管理------------------------------
+// 获取角色列表
 export const reqRoleList = (currentPage, pageSize, roleName) => request({
   path: `/admin/acl/role/${currentPage}/${pageSize}/?roleName=${roleName}`,
   method: 'GET'
 })
-
+// 添加或修改角色
 export const reqAddOrUpdateRole = (data) => {
   if (data.id) {
     return request({
@@ -68,28 +69,30 @@ export const reqAddOrUpdateRole = (data) => {
     })
   }
 }
-
+// 删除角色
 export const reqRemoveRole = (roleId) => request({
   path: `/admin/acl/role/remove/${roleId}`,
   method: 'DELETE'
 })
-
+// 获取角色所有权限
 export const reqAllPermission = (roleId) => request({
   path: `/admin/acl/permission/toAssign/${roleId}`,
   method: 'GET'
 })
-
+// 设置角色权限
 export const reqSetPermission = (data) => request({
   path: '/admin/acl/permission/doAssignAcl',
   method: 'POST',
   data
 })
 
+// ---------------------------------菜单管理------------------------------
+// 获取所有菜单
 export const reqHasPermission = () => request({
   path: '/admin/acl/permission',
   method: 'GET'
 })
-
+// 添加或修改菜单
 export const reqAddOrUpdateMenu = (data) => {
   if (data.id) {
     return request({
@@ -105,7 +108,7 @@ export const reqAddOrUpdateMenu = (data) => {
     })
   }
 }
-
+// 删除菜单
 export const reqRemovePermission = (id) => request({
   path: `/admin/acl/permission/remove/${id}`,
   method: 'DELETE'
