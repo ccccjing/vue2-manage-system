@@ -2,7 +2,22 @@
   <div class="header">
     <i class="el-icon-menu" @click="toggleAside"></i>
     <i class="el-icon-full-screen" @click="fullScreen"></i>
-    <i class="el-icon-setting" @click="toggleAside"></i>
+    <el-popover
+      placement="top-start"
+      title="主题设置"
+      width="200"
+      trigger="hover"
+    >
+      <el-form>
+        <el-form-item label="主体颜色">
+          <el-color-picker v-model="colorMain" size="small"></el-color-picker>
+        </el-form-item>
+        <el-form-item label="暗黑模式">
+          <el-switch v-model="dark" @change="changeDark"></el-switch>
+        </el-form-item>
+      </el-form>
+      <i class="el-icon-setting" slot="reference"></i>
+    </el-popover>
     <el-dropdown @command="handleCommand">
       <span class="el-dropdown-link">
          <el-avatar
@@ -23,6 +38,12 @@
 import { mapGetters } from 'vuex';
 export default {
   name: "CommonHeader",
+  data () {
+    return {
+      colorMain: '#409EFF',
+      dark: false
+    }
+  },
   computed: {
     ...mapGetters(['username', 'avatar'])
   },
@@ -51,6 +72,10 @@ export default {
           query: {redirect: this.$route.path}
         })
       }
+    },
+    changeDark() {
+      let html = document.documentElement
+      this.dark ? html.className = 'dark' : html.className = ''
     }
   }
 };

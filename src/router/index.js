@@ -30,6 +30,12 @@ export const routes = [
     ]
   },
   {
+    path: '/screen',
+    component: () => import('@/views/Screen'),
+    name: 'Screen',
+    meta: { title: '数据大屏', icon: 'el-icon-monitor'}
+  },
+  {
     hidden: true,
     path: '/login',
     component: () => import('@/views/Login'),
