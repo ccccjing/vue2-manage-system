@@ -5,7 +5,11 @@
         <Top></Top>
       </div>
       <div class="bottom">
-        <div class="left">left</div>
+        <div class="left">
+          <Tourist class="tourist"></Tourist>
+          <Sex class="sex"></Sex>
+          <Age class="age"></Age>
+        </div>
         <div class="center">center</div>
         <div class="right">right</div>
       </div>
@@ -15,11 +19,17 @@
 
 <script>
 import Top from './components/Top.vue'
+import Tourist from './components/Tourist.vue'
+import Sex from './components/Sex.vue'
+import Age from './components/Age.vue'
 
 export default {
   name: 'Screen',
   components: {
-    Top
+    Top,
+    Tourist,
+    Sex,
+    Age
   },
   data () {
     return {
@@ -65,6 +75,20 @@ export default {
       }
       .left {
         flex: 1;
+        height: 1040px;
+        display: flex;
+        flex-direction: column;
+        .tourist {
+          flex: 1;
+        }
+        .sex {
+          flex: 1;
+          background-color: aquamarine;
+        }
+        .age {
+          flex: 1;
+          background-color: hotpink;
+        }
       }
       .center {
         flex: 2;
