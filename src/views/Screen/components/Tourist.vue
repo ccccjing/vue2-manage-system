@@ -8,7 +8,9 @@
     <div class="number">
       <span v-for="(item, index) in people" :key="index">{{ item }}</span>
     </div>
-    <div class="charts" ref="charts"></div>
+    <div class="liquidFill">
+      <div class="charts" ref="charts"></div>
+    </div>
   </div>
 </template>
 
@@ -31,7 +33,22 @@ export default {
       },
       series: {
         type: 'liquidFill',
-        data: [0.6]
+        data: [0.6, 0.5, 0.4, 0.3],
+        label: {
+          fontSize: 28
+        },
+        itemStyle: {
+          shadowBlur: 0
+        },
+        outline: {
+            borderDistance: 0,
+            itemStyle: {
+              borderWidth: 5,
+              borderColor: '#29fcff',
+              shadowBlur: 20,
+              shadowColor: 'rgba(255, 0, 0, 1)'
+            }
+        }
       }
     })
   }
@@ -81,9 +98,13 @@ export default {
       background-size: 100% 100%;
     }
   }
-  .charts {
+  .liquidFill {
     width: 100%;
-    height: 90%;
+    height: 230px;
+    .charts {
+      width: 100%;
+      height: 90%;
+    }
   }
 }
 </style>

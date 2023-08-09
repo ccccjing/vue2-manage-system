@@ -83,11 +83,9 @@ export default {
         }
         .sex {
           flex: 1;
-          background-color: aquamarine;
         }
         .age {
           flex: 1;
-          background-color: hotpink;
         }
       }
       .center {
