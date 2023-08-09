@@ -106,7 +106,6 @@ export default {
               position: 'inside',
               color: '#fff',
               formatter: function(params) {
-                  console.log(params)
                   return params.percent + '%'
               }
             },

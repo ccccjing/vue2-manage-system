@@ -10,7 +10,10 @@
           <Sex class="sex"></Sex>
           <Age class="age"></Age>
         </div>
-        <div class="center">center</div>
+        <div class="center">
+          <Map class="map"></Map>
+          <Lines class="line"></Lines>
+        </div>
         <div class="right">right</div>
       </div>
     </div>
@@ -22,6 +25,8 @@ import Top from './components/Top.vue'
 import Tourist from './components/Tourist.vue'
 import Sex from './components/Sex.vue'
 import Age from './components/Age.vue'
+import Map from './components/Map.vue'
+import Lines from './components/Lines.vue'
 
 export default {
   name: 'Screen',
@@ -29,7 +34,9 @@ export default {
     Top,
     Tourist,
     Sex,
-    Age
+    Age,
+    Map,
+    Lines
   },
   data () {
     return {
@@ -90,6 +97,14 @@ export default {
       }
       .center {
         flex: 2;
+        display: flex;
+        flex-direction: column;
+        .map {
+          flex: 3;
+        }
+        .line {
+          flex: 1;
+        }
       }
     }
   }
