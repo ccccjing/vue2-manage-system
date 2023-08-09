@@ -54,7 +54,7 @@ export default {
         type: 'value',
         name: '访问量',
         nameTextStyle: {
-          fontSize: 18,
+          fontSize: 16,
           color: 'white'
         },
         padding:5,

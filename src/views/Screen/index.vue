@@ -14,7 +14,11 @@
           <Map class="map"></Map>
           <Lines class="line"></Lines>
         </div>
-        <div class="right">right</div>
+        <div class="right">
+          <Hot class="hot"></Hot>
+          <AnnualComparison class="year"></AnnualComparison>
+          <Channel class="channel"></Channel>
+        </div>
       </div>
     </div>
   </div>
@@ -27,6 +31,9 @@ import Sex from './components/Sex.vue'
 import Age from './components/Age.vue'
 import Map from './components/Map.vue'
 import Lines from './components/Lines.vue'
+import Hot from './components/Hot.vue'
+import AnnualComparison from './components/AnnualComparison.vue'
+import Channel from './components/Channel.vue'
 
 export default {
   name: 'Screen',
@@ -36,7 +43,10 @@ export default {
     Sex,
     Age,
     Map,
-    Lines
+    Lines,
+    Hot,
+    AnnualComparison,
+    Channel
   },
   data () {
     return {
@@ -79,6 +89,18 @@ export default {
       display: flex;
       .right {
         flex: 1;
+        height: 1040px;
+        display: flex;
+        flex-direction: column;
+        .hot {
+          flex: 1;
+        }
+        .year {
+          flex: 1;
+        }
+        .channel {
+          flex: 1;
+        }
       }
       .left {
         flex: 1;
