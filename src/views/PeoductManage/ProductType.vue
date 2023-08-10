@@ -104,7 +104,7 @@
 import { Message } from 'element-ui'
 import { reqProduct, reqAddOrUpdateProduct, reqDelProduct } from "@/api/product";
 export default {
-  name: "ProductType",
+  name: "Trademark",
   data() {
     const validateTmName = (rule, value, callback) => {
       if(value.trim().length >= 2) {

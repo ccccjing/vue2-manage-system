@@ -1,3 +1,4 @@
+import router from "@/router"
 import { getToken, setToken, removeToken } from "@/utils/auth"
 import { reqLogin, getUserInfo, reqLogout } from "@/api/user"
 
@@ -6,7 +7,8 @@ const state = {
   name: '',
   avatar: '',
   roles: [],
-  introduce: ''
+  introduce: '',
+  routes: []
 }
 
 const mutations = {
@@ -42,12 +44,14 @@ const actions = {
   async userInfo({ commit }) {
     let result = await getUserInfo()
     if (result.code === 200) {
-      const { name, avatar, roles, introduce } = result.data
+      const { name, avatar, roles, introduce, routes } = result.data
+
       commit('SET_NAME', name)
       commit('SET_AVATAR', avatar)
       commit('SET_ROLES', roles)
       commit('SET_INTRODUCE', introduce)
-      return 'ok'
+      // 返回数据
+      return Promise.resolve(routes)
     } else {
       return Promise.reject(new Error(result.message))
     }

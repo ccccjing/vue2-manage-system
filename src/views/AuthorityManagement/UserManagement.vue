@@ -134,7 +134,7 @@ import {
 } from '@/api/acl'
 
 export default {
-  name: 'UserManagement',
+  name: 'User',
   data () {
     const validatorUsername = (rule, value, callback) => {
       if (value.trim().length >= 5) {

@@ -51,7 +51,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="confirm" :loading="confirmBtn">确 定</el-button>
+        <el-button type="primary" @click="confirmAdd" :loading="confirmBtn">确 定</el-button>
       </div>
     </el-dialog>
     <el-drawer
@@ -160,7 +160,7 @@ export default {
       this.dialogFormVisible = true
       this.$refs.roleForm?.clearValidate()
     },
-    async confirm() {
+    async confirmAdd() {
       this.confirmBtn = true
       this.$refs.roleForm.validate(async valid => {
         if (valid) {

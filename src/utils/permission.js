@@ -20,8 +20,10 @@ router.beforeEach(async (to, from, next) => {
         next()
       } else {
         try {
-          await store.dispatch('userInfo')
-          next()
+          const routes = await store.dispatch('userInfo')
+          await store.dispatch('permission/getRoutes', routes)
+          // 防止刷新页面白屏
+          next({ ...to })
         } catch (error) {
           await store.dispatch('userLogout')
           next({ path: '/login', query: { redirect: to.path } })

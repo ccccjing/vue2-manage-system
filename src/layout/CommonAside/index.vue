@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { routes } from '@/router';
 import { mapGetters } from 'vuex'
 import AsideItem from "./AsideItem.vue"
 
@@ -38,9 +37,6 @@ export default {
     ])
   },
   methods: {
-  },
-  mounted() {
-    console.log(routes)
   }
 };
 </script>
