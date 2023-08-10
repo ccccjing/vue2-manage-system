@@ -18,4 +18,7 @@ module.exports = defineConfig({
       fallback: { path: false },
     },
   },
+  publicPath: "./",
+  outputDir: 'dist',
+  assetsDir: 'static',
 })
