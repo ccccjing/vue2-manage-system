@@ -22,12 +22,18 @@
       </el-form>
     </el-card>
     <el-card>
-      <el-button type="primary" size="medium" @click="addUser">添加</el-button>
+      <el-button
+        type="primary"
+        size="medium"
+        @click="addUser"
+        v-isTrue="`btn.User.add`"
+      >添加</el-button>
       <el-button
         type="danger" 
         size="medium"
         :disabled="!multipleSelection.length>0"
         @click="deleteUsers"
+        v-isTrue="`btn.User.remove`"
       >批量删除</el-button>
       <el-table
         border
@@ -47,9 +53,24 @@
         <el-table-column label="更新时间" width="160" prop="updateTime"></el-table-column>
         <el-table-column label="操作" width="300" align="center">
           <template slot-scope="scope">
-            <el-button type="success" size="mini" icon="el-icon-user" @click="allotRole(scope.row)">分配角色</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="editUser(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteUser(scope.row)">删除</el-button>
+            <el-button 
+              type="success"
+              size="mini"
+              icon="el-icon-user"
+              @click="allotRole(scope.row)"
+              v-isTrue="`btn.User.assgin`">分配角色</el-button>
+            <el-button
+              type="primary"
+              size="mini"
+              icon="el-icon-edit"
+              @click="editUser(scope.row)"
+              v-isTrue="`btn.User.update`">编辑</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="deleteUser(scope.row)"
+              v-isTrue="`btn.User.remove`">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

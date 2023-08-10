@@ -6,6 +6,7 @@
         type="primary"
         icon="el-icon-plus"
         @click="addProduct"
+        v-isTrue="`btn.Trademark.add`"
       >添加产品</el-button>
       <!-- 展示表格 -->
       <el-table border :data="trademarkList" v-loading="loading">
@@ -32,12 +33,14 @@
               icon="el-icon-edit"
               size="small"
               @click="editProduct(scope.row)"
+              v-isTrue="`btn.Trademark.update`"
             ></el-button>
             <el-button
               type="danger"
               icon="el-icon-delete"
               size="small"
               @click="delProduct(scope.row)"
+              v-isTrue="`btn.Trademark.remove`"
             ></el-button>
           </template>
         </el-table-column>

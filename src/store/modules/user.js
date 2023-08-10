@@ -8,7 +8,8 @@ const state = {
   avatar: '',
   roles: [],
   introduce: '',
-  routes: []
+  routes: [],
+  buttons: []
 }
 
 const mutations = {
@@ -26,6 +27,9 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_BUTTONS: (state, buttons) => {
+    state.buttons = buttons
   }
 }
 
@@ -44,12 +48,13 @@ const actions = {
   async userInfo({ commit }) {
     let result = await getUserInfo()
     if (result.code === 200) {
-      const { name, avatar, roles, introduce, routes } = result.data
+      const { name, avatar, roles, introduce, routes, buttons } = result.data
 
       commit('SET_NAME', name)
       commit('SET_AVATAR', avatar)
       commit('SET_ROLES', roles)
       commit('SET_INTRODUCE', introduce)
+      commit('SET_BUTTONS', buttons)
       // 返回数据
       return Promise.resolve(routes)
     } else {

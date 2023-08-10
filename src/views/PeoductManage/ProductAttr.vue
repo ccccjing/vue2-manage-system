@@ -9,6 +9,7 @@
           icon="el-icon-plus"
           :disabled="category3Id?false:true"
           @click="addAttr"
+          v-isTrue="`btn.Attr.add`"
         >添加属性</el-button>
         <el-table border style="margin:10px 0" :data="attrArr" v-loading="loading">
           <el-table-column label="序号" type="index" width="80"></el-table-column>
@@ -29,12 +30,14 @@
                 icon="el-icon-edit"
                 size="mini"
                 @click="updateAttr(scope.row)"
+                :v-isTrue="`btn.Attr.update`"
               ></el-button>
               <el-button
                 type="danger"
                 icon="el-icon-delete"
                 size="mini"
                 @click="open(scope.row.id)"
+                :v-isTrue="`btn.Attr.remove`"
               ></el-button>
             </template>
           </el-table-column>

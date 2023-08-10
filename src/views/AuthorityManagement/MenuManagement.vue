@@ -16,6 +16,7 @@
             size="mini"
             :disabled="scope.row.level===4?true:false"
             @click="addPermission(scope.row)"
+            v-isTrue="`btn.Trademark.add`"
           >
             {{ scope.row.level===3?'添加功能':'添加菜单' }}
           </el-button>
@@ -24,6 +25,7 @@
             size="mini"
             :disabled="scope.row.level===1?true:false"
             @click="editPermission(scope.row)"
+            v-isTrue="`btn.Trademark.update`"
           >
             编辑
           </el-button>
@@ -32,6 +34,7 @@
             size="mini"
             :disabled="scope.row.level===1?true:false"
             @click="deletePremission(scope.row)"
+            v-isTrue="`btn.Trademark.remove`"
           >
             删除
           </el-button>

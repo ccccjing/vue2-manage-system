@@ -50,24 +50,28 @@
               type="success"
               :icon="scope.row.isSale===1?`el-icon-bottom`:`el-icon-top`"
               @click="updateSale(scope.row)"
+              v-isTrue="`btn.Sku.updown`"
             ></el-button>
             <el-button
               size="mini"
               type="primary"
               icon="el-icon-edit"
               @click="updateSku"
+              v-isTrue="`btn.Sku.update`"
             ></el-button>
             <el-button
               size="mini"
               type="info"
               icon="el-icon-info"
               @click="open(scope.row)"
+              v-isTrue="`btn.Sku.detail`"
             ></el-button>
             <el-button
               size="mini"
               type="danger"
               icon="el-icon-delete"
               @click="deleteSku(scope.row)"
+              v-isTrue="`btn.Sku.remove`"
             ></el-button>
           </template>
         </el-table-column>

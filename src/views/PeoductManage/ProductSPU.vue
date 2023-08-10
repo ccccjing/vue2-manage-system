@@ -7,6 +7,7 @@
           type="primary"
           icon="el-icon-plus"
           :disabled="category3Id?false:true"
+          v-isTrue="`btn.Spu.add`"
           @click="addSpu(1)"
         >添加SPU</el-button>
         <el-table style="margin:10px 0" border :data="records" v-loading="loading">
@@ -21,6 +22,7 @@
                 size="mini"
                 title="添加SKU"
                 @click="addSku(scope.row)"
+                v-isTrue="`btn.Spu.addsku`"
               ></el-button>
               <el-button
                 type="primary"
@@ -28,6 +30,7 @@
                 size="mini"
                 title="修改SPU"
                 @click="editSpu(1, scope.row)"
+                v-isTrue="`btn.Spu.update`"
               ></el-button>
               <el-button
                 type="info" 
@@ -35,6 +38,7 @@
                 size="mini"
                 title="查看SKU"
                 @click="findSku(scope.row)"
+                v-isTrue="`btn.Spu.skus`"
               ></el-button>
               <el-button
                 type="danger"
@@ -42,6 +46,7 @@
                 size="mini"
                 title="删除SPU"
                 @click="deleteSpu(scope.row)"
+                v-isTrue="`btn.Spu.delete`"
               ></el-button>
             </template>
           </el-table-column>

@@ -17,7 +17,11 @@
       </el-form>
     </el-card>
     <el-card>
-      <el-button type="primary" size="medium" @click="addRole">添加角色</el-button>
+      <el-button
+      type="primary"
+      size="medium"
+      @click="addRole"
+      v-isTrue="`btn.Role.add`">添加角色</el-button>
       <el-table border :data="roleList" v-loading="loading" max-height="310">
         <el-table-column label="#" align="center" type="index" width="80"></el-table-column>
         <el-table-column label="ID" prop="id" width="80"></el-table-column>
@@ -26,9 +30,24 @@
         <el-table-column label="更新时间" prop="updateTime" width="160"></el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <el-button type="success" size="mini" icon="el-icon-user" @click="grant(scope.row)">分配权限</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="updateRole(scope.row)">编辑</el-button>
-            <el-button type="danger" size="mini" icon="el-icon-delete" @click="deleteRole(scope.row)">删除</el-button>
+            <el-button
+            type="success"
+            size="mini"
+            icon="el-icon-user"
+            @click="grant(scope.row)"
+            v-isTrue="`btn.Role.assgin`">分配权限</el-button>
+            <el-button
+            type="primary"
+            size="mini"
+            icon="el-icon-edit"
+            @click="updateRole(scope.row)"
+            v-isTrue="`btn.Role.update`">编辑</el-button>
+            <el-button
+            type="danger"
+            size="mini"
+            icon="el-icon-delete"
+            @click="deleteRole(scope.row)"
+            v-isTrue="`btn.Role.remove`">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

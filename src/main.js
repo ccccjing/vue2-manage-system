@@ -7,6 +7,8 @@ import router from './router'
 import store from './store'
 import '@/utils/permission'
 import '../mock'
+// 引入自定义指令
+import '@/directive/isTrue'
 
 Vue.config.productionTip = false
 
